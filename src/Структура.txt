@@ -1,0 +1,67 @@
+* app
+  * providers
+    - withAuth.jsx
+  - index.js
+  - routes.jsx
+* assets
+* entities
+  * auth
+    * viewer
+      * lib
+      * model
+	* selectors
+	  - getUserAuthData.js
+	* slice
+	  - userSlice.js
+      - index.js
+* features
+  * auth
+    * email-password-auth
+      * lib
+      * model
+	* selectors
+	  - getLoginState.js
+	* services
+	  - loginByUsername.js
+	* slice
+	  - loginSlice.js
+      * ui
+	* login-form
+	  - login-form.jsx
+      - index.js
+* pages
+  * auth
+    * reset
+      - index.js
+      - lib.js
+      - model.js
+      - ui.jsx
+    * sign-in
+      - index.js
+      - lib.js
+      - model.js
+      - ui.jsx
+    * sign-up
+    - index.js
+    - lib.js
+    - model.js
+    - ui.jsx
+  * home
+    - page.jsx
+  - index.jsx
+  * viewer
+    * profile
+      - index.js
+      - lib.js
+      - model.js
+      - ui.jsx
+* shared
+* ui
+  - header.jsx
+  - footer.jsx
+  - page-template.jsx
+* widgets
+- main.jsx
+
+* папки
+- файлы
