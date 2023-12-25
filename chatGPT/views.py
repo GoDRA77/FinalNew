@@ -7,9 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import ChatGptSerializer, StorySerializer, ChatTextInfo, GamesSerializer
 
-client = OpenAI(
-    api_key="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",
-)
+client = OpenAI(api_key="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",)
 
 
 class ChatTextList(generics.ListAPIView):

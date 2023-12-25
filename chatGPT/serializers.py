@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from Auth.models import CustomUser
 from .models import ChatText, Story, Games
-
+from openai import Client
+client = Client(api_key="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",)
 
 class ChatTextInfo(serializers.ModelSerializer):
     class Meta:
