@@ -9,10 +9,11 @@ from django.utils.translation import gettext_lazy as _
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email',  'first_name', 'last_name')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name')
 
 
 class UserRegisSerializer(serializers.ModelSerializer):
+    # Сериализатор для регистрации новых пользователей
     password = serializers.CharField(write_only=True)
     confirm_password = serializers.CharField(write_only=True)
 
@@ -23,11 +24,12 @@ class UserRegisSerializer(serializers.ModelSerializer):
             'username': {'write_only': True},
             'email': {'write_only': True},
             'password': {'write_only': True},
-            'first_name': {'required': False,'write_only': True},
-            'last_name': {'required': False,'write_only': True},
+            'first_name': {'required': False, 'write_only': True},
+            'last_name': {'required': False, 'write_only': True},
         }
 
     def validate(self, data):
+        # Проверка пароля и подтверждения пароля
         password = data.get('password')
         confirm_password = data.get('confirm_password')
 
@@ -35,7 +37,7 @@ class UserRegisSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Passwords do not match.")
 
         try:
-            # Validate the password using Django's password validation.
+            # Проверка пароля с использованием встроенной валидации Django
             validate_password(password, self.instance)
         except ValidationError as e:
             raise serializers.ValidationError(str(e))
@@ -44,7 +46,7 @@ class UserRegisSerializer(serializers.ModelSerializer):
         username = data.get('username')
 
         try:
-            # Validate the username using CustomUsernameValidator.
+            # Проверка имени пользователя с помощью CustomUsernameValidator
             username_validator(username)
         except ValidationError as e:
             raise serializers.ValidationError({'username': str(e)})
@@ -52,6 +54,7 @@ class UserRegisSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        # Создание нового пользователя
         user = CustomUser.objects.create_user(
             email=validated_data.get('email', ''),
             username=validated_data['username'],
@@ -63,11 +66,13 @@ class UserRegisSerializer(serializers.ModelSerializer):
 
 
 class ChangePasswordSerializer(serializers.Serializer):
+    # Сериализатор для смены пароля
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 
 
 class CustomUsernameValidator(UnicodeUsernameValidator):
+    # Кастомный валидатор для проверки имени пользователя
     def __init__(self, min_length=3, *args, **kwargs):
         self.min_length = min_length
         super().__init__(*args, **kwargs)
@@ -85,4 +90,3 @@ class CustomUsernameValidator(UnicodeUsernameValidator):
                 _("Username must contain only letters and numbers."),
                 code='username_invalid_characters',
             )
-

@@ -1,19 +1,20 @@
 from django.http import Http404
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from .models import ChatText, Story, Games
-from openai import OpenAI
 from rest_framework import status, generics
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import ChatGptSerializer, StorySerializer, ChatTextInfo, GamesSerializer
-
-client = OpenAI(api_key="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",)
+from .models import ChatText, Story, Games
+from .serializers import ChatTextInfo, GamesSerializer, ChatGptSerializer, StorySerializer
+from openai import OpenAI
+client = OpenAI(api_key="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")
+# Представление для списка чатов, доступное без аутентификации
 
 
 class ChatTextList(generics.ListAPIView):
     permission_classes = [AllowAny]
     queryset = ChatText.objects.all()
     serializer_class = ChatTextInfo
+# Представление для взаимодействия с OpenAI для чата
 
 
 class ChatMasterView(APIView):
@@ -25,12 +26,12 @@ class ChatMasterView(APIView):
 
         serializer = ChatGptSerializer(data=request.data, context={'request': request})
 
-        if not serializer.is_valid():
+        if serializer.is_valid():
+            response_data = serializer.save()
+            return Response(response_data, status=status.HTTP_200_OK)
+        else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        response_data = serializer.save()
-
-        return Response(response_data, status=status.HTTP_200_OK)
+# Представление для работы с историями
 
 
 class StoryView(APIView):
@@ -57,6 +58,7 @@ class StoryView(APIView):
         stories = Story.objects.filter(user=user)
         serializer = StorySerializer(stories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+# Представление для получения информации об играх
 
 
 class GamesDetailView(APIView):
